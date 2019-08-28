@@ -8,13 +8,13 @@ La tarea se genera con la librería Quartz (http://www.quartz-scheduler.org)
 
 ## Steps to Setup
 
-**1. Clone the application**
+**1. Clonar repo**
 
 ```bash
-git clone https://github.com/callicoder/spring-boot-mysql-rest-api-tutorial.git
+git clone https://github.com/jonybuzz/quartz-ejemplos.git
 ```
 
-**6. Build and run the app using maven**
+**2. Correr desde la carpeta spring-boot-quartz-demo**
 
 Finally, You can run the app by typing the following command from the root directory of the project -
 
@@ -22,7 +22,7 @@ Finally, You can run the app by typing the following command from the root direc
 mvn spring-boot:run
 ```
 
-## Activar usando este comando o desde Postman
+## Activar Job usando este comando o desde Postman
 
 ```bash
 curl -i -H "Content-Type: application/json" -X POST \
