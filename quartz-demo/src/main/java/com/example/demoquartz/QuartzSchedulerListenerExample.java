@@ -25,7 +25,7 @@ public class QuartzSchedulerListenerExample implements ILatch {
     public void fireJob() throws SchedulerException, InterruptedException {
         SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
         Scheduler scheduler = schedFact.getScheduler();
-        scheduler.getListenerManager().addSchedulerListener(new SchedulerListenerImpl(scheduler));
+        scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
         scheduler.start();
 
         // define the job and tie it to our HelloJob class

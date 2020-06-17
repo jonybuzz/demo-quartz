@@ -7,27 +7,31 @@ import org.quartz.JobExecutionException;
 
 public class JobImpl implements Job {
 
-    private static int count;
+    private static int count = 0;
 
     public void execute(JobExecutionContext jobContext) throws JobExecutionException {
-        System.out.println("--------------------------------------------------------------------");
-        System.out.println("Inicio: " + jobContext.getFireTime());
+        
         JobDetail jobDetail = jobContext.getJobDetail();
-        System.out.println("Info: " + jobDetail.getJobDataMap().getString("info"));
-        System.out.println("Fin: " + jobContext.getJobRunTime() + ", key: " + jobDetail.getKey());
+        count++;
+        
+        System.out.println("--------------------------------------------------------------------");
+        System.out.println("EJECUTANDO JOB " + jobDetail.getKey());
+        System.out.println("Ejecucion N° " + count);
+        System.out.println("Inicio: " + jobContext.getFireTime());
+        System.out.println("Info: " + jobDetail.getJobDataMap().getString("ejemplo"));
+        System.out.println("Fin: " + jobContext.getJobRunTime());
         System.out.println("Proxima ejecucion: " + jobContext.getNextFireTime());
         System.out.println("--------------------------------------------------------------------");
 
-        ILatch latch = (ILatch) jobDetail.getJobDataMap().get("latch");
-        latch.countDown();
-        count++;
-        System.out.println("Job count " + count);
+        ILatch semaforo = (ILatch) jobDetail.getJobDataMap().get("semaforo");
+        semaforo.countDown();
         if (count == 2) {
-            throw new RuntimeException("Some RuntimeException!");
+            throw new RuntimeException("RuntimeException!");
         }
         if (count == 4) {
-            throw new JobExecutionException("Some JobExecutionException!");
+            throw new JobExecutionException("JobExecutionException!");
         }
+    
     }
 
 }

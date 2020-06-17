@@ -14,8 +14,8 @@ import org.quartz.TriggerBuilder;
 
 public class QuartzSchedulerExample implements ILatch {
 
-    private int repeatCount = 3;
-    private CountDownLatch latch = new CountDownLatch(repeatCount + 1);
+    private static int REPEAT_TIMES = 3;
+    private CountDownLatch contador = new CountDownLatch(REPEAT_TIMES + 1);
 
     public static void main(String[] args) throws Exception {
         QuartzSchedulerExample quartzSchedulerExample = new QuartzSchedulerExample();
@@ -44,19 +44,20 @@ public class QuartzSchedulerExample implements ILatch {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("myTrigger", "group1")
                 .startNow()
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withRepeatCount(repeatCount)
+                .withSchedule(SimpleScheduleBuilder
+                        .simpleSchedule()
+                        .withRepeatCount(REPEAT_TIMES)
                         .withIntervalInSeconds(2))
                 .build();
 
 
         scheduler.scheduleJob(jobDetail, trigger);
-        latch.await();
+        contador.await();
         System.out.println("All triggers executed. Shutdown scheduler");
         scheduler.shutdown();
     }
 
     public void countDown() {
-        latch.countDown();
+        contador.countDown();
     }
 }

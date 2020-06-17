@@ -3,7 +3,6 @@ package com.example.demoquartz;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.CountDownLatch;
-
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobBuilder;
@@ -17,50 +16,53 @@ import org.quartz.TriggerBuilder;
 
 public class QuartzSchedulerCronTriggerExample implements ILatch {
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    private CountDownLatch semaforo = new CountDownLatch(1);
 
     public static void main(String[] args) throws Exception {
         QuartzSchedulerCronTriggerExample quartzSchedulerExample = new QuartzSchedulerCronTriggerExample();
-        quartzSchedulerExample.fireJob();
+        quartzSchedulerExample.comenzar();
     }
 
-    public void fireJob() throws SchedulerException, InterruptedException {
-        SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
-        Scheduler scheduler = schedFact.getScheduler();
-        scheduler.getListenerManager().addSchedulerListener(new SchedulerListenerImpl(scheduler));
+    public void comenzar() throws SchedulerException, InterruptedException {
+
+        // Creacion del scheduler
+        SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
+        Scheduler scheduler = schedFactory.getScheduler();
+        // con un listener propio
+        scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
         scheduler.start();
 
-        // define the job and tie it to our JobImpl class
+        // Construccion de clase JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
-        data.put("latch", this);
-
-        JobDetail jobDetail = jobBuilder.usingJobData("example", "com.javacodegeeks.quartz.QuartzSchedulerListenerExample")
+        data.put("semaforo", this);
+        JobDetail jobDetail = jobBuilder
+                .withIdentity("unJob")
                 .usingJobData(data)
-                .withIdentity("myJob", "group1")
+                .usingJobData("ejemplo", "algun valor")
                 .build();
 
         Calendar rightNow = Calendar.getInstance();
         int hour = rightNow.get(Calendar.HOUR_OF_DAY);
         int min = rightNow.get(Calendar.MINUTE);
 
-        System.out.println("Current time: " + new Date());
+        System.out.println("Hora actual: " + new Date());
 
-        // Fire at curent time + 1 min every day
+        // Corre todos los dias a la hora actual mas un minuto
+        String cron = "0 " + (min + 1) + " " + hour + " * * ? *";
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity("myTrigger", "group1")
-                .startAt(DateBuilder.todayAt(10, 20, 20))
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 " + (min + 1) + " " + hour + " * * ? *"))
+                .withIdentity("unTrigger")
+                .startAt(new Date())
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 .build();
 
-        // Tell quartz to schedule the job using our trigger
+        // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
-        latch.await();
-        System.out.println("All triggers executed. Shutdown scheduler");
+        semaforo.await(); // esperando fin de las ejecuciones
         scheduler.shutdown();
     }
 
     public void countDown() {
-        latch.countDown();
+        semaforo.countDown();
     }
 }

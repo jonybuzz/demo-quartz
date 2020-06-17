@@ -4,6 +4,7 @@
     <groupId>com.example</groupId>
     <artifactId>demo-quartz-scheduler</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    
     <dependencies>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -11,4 +12,5 @@
             <version>2.3.1</version>
         </dependency>
     </dependencies>
+    
 </project>
