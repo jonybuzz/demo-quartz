@@ -16,7 +16,7 @@ import org.quartz.TriggerBuilder;
 
 public class QuartzSchedulerCronTriggerExample implements ILatch {
 
-    private CountDownLatch semaforo = new CountDownLatch(1);
+    private CountDownLatch contadorSincronico = new CountDownLatch(1);
 
     public static void main(String[] args) throws Exception {
         QuartzSchedulerCronTriggerExample quartzSchedulerExample = new QuartzSchedulerCronTriggerExample();
@@ -28,14 +28,14 @@ public class QuartzSchedulerCronTriggerExample implements ILatch {
         // Creacion del scheduler
         SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
         Scheduler scheduler = schedFactory.getScheduler();
-        // con un listener propio
+        // registro de un listener propio
         scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
         scheduler.start();
 
-        // Construccion de clase JobDetail
+        // Construccion de JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
-        data.put("semaforo", this);
+        data.put("contadorSincronico", this);
         JobDetail jobDetail = jobBuilder
                 .withIdentity("unJob")
                 .usingJobData(data)
@@ -48,6 +48,7 @@ public class QuartzSchedulerCronTriggerExample implements ILatch {
 
         System.out.println("Hora actual: " + new Date());
 
+        // Construccion de Trigger
         // Corre todos los dias a la hora actual mas un minuto
         String cron = "0 " + (min + 1) + " " + hour + " * * ? *";
         Trigger trigger = TriggerBuilder.newTrigger()
@@ -58,11 +59,12 @@ public class QuartzSchedulerCronTriggerExample implements ILatch {
 
         // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
-        semaforo.await(); // esperando fin de las ejecuciones
+        
+        contadorSincronico.await(); // esperando fin de las ejecuciones
         scheduler.shutdown();
     }
 
     public void countDown() {
-        semaforo.countDown();
+        contadorSincronico.countDown();
     }
 }

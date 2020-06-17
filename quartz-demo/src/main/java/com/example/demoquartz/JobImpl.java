@@ -23,8 +23,8 @@ public class JobImpl implements Job {
         System.out.println("Proxima ejecucion: " + jobContext.getNextFireTime());
         System.out.println("--------------------------------------------------------------------");
 
-        ILatch semaforo = (ILatch) jobDetail.getJobDataMap().get("semaforo");
-        semaforo.countDown();
+        ILatch contadorSincronico = (ILatch) jobDetail.getJobDataMap().get("contadorSincronico");
+        contadorSincronico.countDown();
         if (count == 2) {
             throw new RuntimeException("RuntimeException!");
         }

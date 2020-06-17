@@ -14,47 +14,53 @@ import org.quartz.TriggerBuilder;
 
 public class QuartzSchedulerListenerExample implements ILatch {
 
-    private int repeatCount = 3;
-    private CountDownLatch latch = new CountDownLatch(repeatCount + 1);
+    private static int REPETICIONES = 3;
+    private CountDownLatch contadorSincronico = new CountDownLatch(REPETICIONES + 1);
 
     public static void main(String[] args) throws Exception {
         QuartzSchedulerListenerExample quartzSchedulerExample = new QuartzSchedulerListenerExample();
-        quartzSchedulerExample.fireJob();
+        quartzSchedulerExample.comenzar();
     }
 
-    public void fireJob() throws SchedulerException, InterruptedException {
-        SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
-        Scheduler scheduler = schedFact.getScheduler();
+    public void comenzar() throws SchedulerException, InterruptedException {
+
+        // Creacion del scheduler
+        SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
+        Scheduler scheduler = schedFactory.getScheduler();
+
+        // registro de un listener propio
         scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
+
         scheduler.start();
 
-        // define the job and tie it to our HelloJob class
+        // Construccion de JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
-        data.put("latch", this);
+        data.put("contadorSincronico", this);
 
-        JobDetail jobDetail = jobBuilder.usingJobData("example", "com.javacodegeeks.quartz.QuartzSchedulerListenerExample")
+        JobDetail jobDetail = jobBuilder
+                .withIdentity("unJob")
                 .usingJobData(data)
-                .withIdentity("myJob", "group1")
+                .usingJobData("ejemplo", "algun valor")
                 .build();
 
-        // Trigger the job to run now, and then every 40 seconds
+        // Construccion de Trigger
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity("myTrigger", "group1")
+                .withIdentity("unTrigger")
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withRepeatCount(repeatCount)
+                        .withRepeatCount(REPETICIONES)
                         .withIntervalInSeconds(2))
                 .build();
 
-        // Tell quartz to schedule the job using our trigger
+        // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
-        latch.await();
-        System.out.println("All triggers executed. Shutdown scheduler");
+
+        contadorSincronico.await();
         scheduler.shutdown();
     }
 
     public void countDown() {
-        latch.countDown();
+        contadorSincronico.countDown();
     }
 }

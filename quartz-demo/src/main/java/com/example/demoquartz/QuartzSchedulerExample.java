@@ -14,50 +14,50 @@ import org.quartz.TriggerBuilder;
 
 public class QuartzSchedulerExample implements ILatch {
 
-    private static int REPEAT_TIMES = 3;
-    private CountDownLatch contador = new CountDownLatch(REPEAT_TIMES + 1);
+    private static int REPETICIONES = 3;
+    private CountDownLatch contadorSincronico = new CountDownLatch(REPETICIONES + 1);
 
     public static void main(String[] args) throws Exception {
         QuartzSchedulerExample quartzSchedulerExample = new QuartzSchedulerExample();
-        quartzSchedulerExample.fireJob();
+        quartzSchedulerExample.comenzar();
     }
 
-    
-    public void fireJob() throws SchedulerException, InterruptedException {
+    public void comenzar() throws SchedulerException, InterruptedException {
         
-        SchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
-        Scheduler scheduler = schedFact.getScheduler();
+        // Creacion del scheduler
+        SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
+        Scheduler scheduler = schedFactory.getScheduler();
         scheduler.start();
 
-
+        // Construccion de JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
-        data.put("latch", this);
+        data.put("contadorSincronico", this);
 
-
-        JobDetail jobDetail = jobBuilder.usingJobData("example", "QuartzSchedulerExample")
+        JobDetail jobDetail = jobBuilder
+                .withIdentity("unJob")
                 .usingJobData(data)
-                .withIdentity("myJob", "group1")
+                .usingJobData("ejemplo", "algun valor")
                 .build();
 
-
+        // Construccion de Trigger
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity("myTrigger", "group1")
+                .withIdentity("unTrigger")
                 .startNow()
                 .withSchedule(SimpleScheduleBuilder
                         .simpleSchedule()
-                        .withRepeatCount(REPEAT_TIMES)
+                        .withRepeatCount(REPETICIONES)
                         .withIntervalInSeconds(2))
                 .build();
 
-
+        // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
-        contador.await();
-        System.out.println("All triggers executed. Shutdown scheduler");
+        
+        contadorSincronico.await();
         scheduler.shutdown();
     }
 
     public void countDown() {
-        contador.countDown();
+        contadorSincronico.countDown();
     }
 }
