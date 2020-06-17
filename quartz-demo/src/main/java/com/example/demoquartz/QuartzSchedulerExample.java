@@ -17,11 +17,13 @@ public class QuartzSchedulerExample implements ICuentaRegresiva {
     private static int REPETICIONES = 3;
     private CountDownLatch contadorSincronico = new CountDownLatch(REPETICIONES + 1);
 
+    
     public static void main(String[] args) throws Exception {
         QuartzSchedulerExample quartzSchedulerExample = new QuartzSchedulerExample();
         quartzSchedulerExample.comenzar();
     }
 
+    
     public void comenzar() throws SchedulerException, InterruptedException {
         
         // Creacion del scheduler
@@ -35,7 +37,7 @@ public class QuartzSchedulerExample implements ICuentaRegresiva {
         data.put("contadorSincronico", this);
 
         JobDetail jobDetail = jobBuilder
-                .withIdentity("unJob")
+                .withIdentity("unJob", "gr")
                 .usingJobData(data)
                 .usingJobData("ejemplo", "algun valor")
                 .build();

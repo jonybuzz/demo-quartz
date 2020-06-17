@@ -17,11 +17,13 @@ public class QuartzSchedulerListenerExample implements ICuentaRegresiva {
     private static int REPETICIONES = 3;
     private CountDownLatch contadorSincronico = new CountDownLatch(REPETICIONES + 1);
 
+    
     public static void main(String[] args) throws Exception {
         QuartzSchedulerListenerExample quartzSchedulerExample = new QuartzSchedulerListenerExample();
         quartzSchedulerExample.comenzar();
     }
 
+    
     public void comenzar() throws SchedulerException, InterruptedException {
 
         // Creacion del scheduler
