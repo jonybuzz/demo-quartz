@@ -14,7 +14,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-public class QuartzSchedulerCronTriggerExample implements ILatch {
+public class QuartzSchedulerCronTriggerExample implements ICuentaRegresiva {
 
     private CountDownLatch contadorSincronico = new CountDownLatch(1);
 

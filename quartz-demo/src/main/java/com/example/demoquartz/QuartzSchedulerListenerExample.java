@@ -12,7 +12,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-public class QuartzSchedulerListenerExample implements ILatch {
+public class QuartzSchedulerListenerExample implements ICuentaRegresiva {
 
     private static int REPETICIONES = 3;
     private CountDownLatch contadorSincronico = new CountDownLatch(REPETICIONES + 1);
