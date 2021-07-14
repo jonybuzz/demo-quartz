@@ -17,7 +17,7 @@ public class JobImpl implements Job {
         
         System.out.println("--------------------------------------------------------------------");
         System.out.println("EJECUTANDO JOB " + jobDetail.getKey());
-        System.out.println("Ejecucion N° " + count);
+        System.out.println("Ejecucion Num. " + count);
         System.out.println("Inicio: " + jobContext.getFireTime());
         System.out.println("Info: " + jobDetail.getJobDataMap().getString("ejemplo"));
         System.out.println("Fin: " + jobContext.getJobRunTime());
