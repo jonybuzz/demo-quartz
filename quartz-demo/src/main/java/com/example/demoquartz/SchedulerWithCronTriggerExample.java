@@ -29,7 +29,6 @@ public class SchedulerWithCronTriggerExample implements ICuentaRegresiva {
         Scheduler scheduler = schedFactory.getScheduler();
         // registro de un listener propio
         scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
-        scheduler.start();
 
         // Construccion de JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
@@ -68,7 +67,10 @@ public class SchedulerWithCronTriggerExample implements ICuentaRegresiva {
 
         // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
-        
+        scheduler.start();
+
+        // Para que el proceso principal espere a los calendarizados.
+        // Porque en Java cuando el hilo principal muere, todos los sub-hilos también.
         contadorSincronico.await(); // esperando fin de las ejecuciones
         scheduler.shutdown();
     }

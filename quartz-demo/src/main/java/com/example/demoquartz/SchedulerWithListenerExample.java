@@ -58,6 +58,8 @@ public class SchedulerWithListenerExample implements ICuentaRegresiva {
         // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
 
+        // Para que el proceso principal espere a los calendarizados.
+        // Porque en Java cuando el hilo principal muere, todos los sub-hilos también.
         contadorSincronico.await();
         scheduler.shutdown();
     }
