@@ -5,6 +5,8 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.util.concurrent.CountDownLatch;
+
 public class JobImpl implements Job {
 
     private static int count = 0;
@@ -24,7 +26,7 @@ public class JobImpl implements Job {
         System.out.println("Proxima ejecucion: " + jobContext.getNextFireTime());
         System.out.println("--------------------------------------------------------------------");
 
-        ICuentaRegresiva contadorSincronico = (ICuentaRegresiva) jobDetail.getJobDataMap().get("contadorSincronico");
+        CountDownLatch contadorSincronico = (CountDownLatch) jobDetail.getJobDataMap().get("contadorSincronico");
         contadorSincronico.countDown();
         if (count == 2) {
             throw new RuntimeException("RuntimeException!");

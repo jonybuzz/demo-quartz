@@ -13,7 +13,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-public class SchedulerWithCronTriggerExample implements ICuentaRegresiva {
+public class SchedulerWithCronTriggerExample {
 
     private CountDownLatch contadorSincronico = new CountDownLatch(1);
 
@@ -33,7 +33,7 @@ public class SchedulerWithCronTriggerExample implements ICuentaRegresiva {
         // Construccion de JobDetail
         JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
-        data.put("contadorSincronico", this);
+        data.put("contadorSincronico", contadorSincronico);
         JobDetail jobDetail = jobBuilder
                 .withIdentity("unJob")
                 .usingJobData(data)
@@ -75,7 +75,4 @@ public class SchedulerWithCronTriggerExample implements ICuentaRegresiva {
         scheduler.shutdown();
     }
 
-    public void countDown() {
-        contadorSincronico.countDown();
-    }
 }
