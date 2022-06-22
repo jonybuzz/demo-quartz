@@ -26,6 +26,7 @@ public class JobImpl implements Job {
         System.out.println("Proxima ejecucion: " + jobContext.getNextFireTime());
         System.out.println("--------------------------------------------------------------------");
 
+        //aca uso el jobdatamap con mis objetos de negocio
         CountDownLatch contadorSincronico = (CountDownLatch) jobDetail.getJobDataMap().get("contadorSincronico");
         contadorSincronico.countDown();
         if (count == 2) {

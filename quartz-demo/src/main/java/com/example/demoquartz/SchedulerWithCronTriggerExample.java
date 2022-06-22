@@ -49,6 +49,7 @@ public class SchedulerWithCronTriggerExample {
         // Construccion de Trigger
 
         // Formato de expresion cron
+        //              seconds ( 0 - 59)
         // ┌───────────── minute (0 - 59)
         // │ ┌───────────── hour (0 - 23)
         // │ │ ┌───────────── day of the month (1 - 31)
