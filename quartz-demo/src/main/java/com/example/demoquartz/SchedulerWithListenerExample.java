@@ -31,7 +31,8 @@ public class SchedulerWithListenerExample {
         Scheduler scheduler = schedFactory.getScheduler();
 
         // registro de un listener propio
-        scheduler.getListenerManager().addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
+        scheduler.getListenerManager()
+                .addSchedulerListener(new LogSchedulerListenerImpl(scheduler));
 
         scheduler.start();
 

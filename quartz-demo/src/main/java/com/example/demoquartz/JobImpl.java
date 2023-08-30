@@ -30,9 +30,11 @@ public class JobImpl implements Job {
         CountDownLatch contadorSincronico = (CountDownLatch) jobDetail.getJobDataMap().get("contadorSincronico");
         contadorSincronico.countDown();
         if (count == 2) {
+            System.out.println("Count 2");
             throw new RuntimeException("RuntimeException!");
         }
         if (count == 4) {
+            System.out.println("Count 4");
             throw new JobExecutionException("JobExecutionException!");
         }
     

@@ -25,17 +25,12 @@ public class SimpleSchedulerExample {
 
     
     public void comenzar() throws SchedulerException, InterruptedException {
-        
-        // Creacion del scheduler
-        SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
-        Scheduler scheduler = schedFactory.getScheduler();
-        scheduler.start();
 
         // Construccion de JobDetail
-        JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDataMap data = new JobDataMap();
         data.put("contadorSincronico", contadorSincronico);
 
+        JobBuilder jobBuilder = JobBuilder.newJob(JobImpl.class);
         JobDetail jobDetail = jobBuilder
                 .withIdentity("unJob", "gr")
                 .usingJobData(data)
@@ -52,6 +47,11 @@ public class SimpleSchedulerExample {
                         .withIntervalInSeconds(2))
                 .build();
 
+        // Creacion del scheduler
+        SchedulerFactory schedFactory = new org.quartz.impl.StdSchedulerFactory();
+        Scheduler scheduler = schedFactory.getScheduler();
+        scheduler.start();
+
         // Asignacion del job y el trigger a la inst de scheduler
         scheduler.scheduleJob(jobDetail, trigger);
 
@@ -59,6 +59,8 @@ public class SimpleSchedulerExample {
         // Porque en Java cuando el hilo principal muere, todos los sub-hilos también.
         contadorSincronico.await();
         scheduler.shutdown();
+
+        /// sigo hilo main de ejecucion
     }
 
 }

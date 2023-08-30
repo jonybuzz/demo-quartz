@@ -49,17 +49,19 @@ public class SchedulerWithCronTriggerExample {
         // Construccion de Trigger
 
         // Formato de expresion cron
-        //              seconds ( 0 - 59)
-        // ┌───────────── minute (0 - 59)
-        // │ ┌───────────── hour (0 - 23)
-        // │ │ ┌───────────── day of the month (1 - 31)
-        // │ │ │ ┌───────────── month (1 - 12)
-        // │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
-        // │ │ │ │ │ ┌───────────── year
-        // │ │ │ │ │ │
-        // * * * * * *
+        // ┌──────────── seconds ( 0 - 59)
+        // │ ┌───────────── minute (0 - 59)
+        // │ │ ┌───────────── hour (0 - 23)
+        // │ │ │ ┌───────────── day of the month (1 - 31)
+        // │ │ │ │ ┌───────────── month (1 - 12)
+        // │ │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+        // │ │ │ │ │ │ ┌───────────── year
+        // │ │ │ │ │ │ │
+        // * * * * * * *
+        // 0 0 8,14 * * ? *  todos los días a las 8hs y 14hs minuto 0
 
         String cron = "0 " + (min + 1) + " " + hour + " * * ? *";
+        System.out.println("Cron: " + cron);
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("unTrigger")
                 .startAt(new Date())
